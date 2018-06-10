@@ -55,6 +55,18 @@ import static org.testng.Assert.fail;
 public class SwaggerParserTest {
 
     @Test
+    public void parse() throws Exception {
+        SwaggerParser parser = new SwaggerParser();
+        final Swagger swagger = parser.read("src/test/resources/parse.json");
+        Assert.assertNotNull(swagger);
+
+        assertTrue(swagger.getDefinitions().get("Employee").getProperties().get("account") instanceof ArrayProperty);
+        ArrayProperty account = (ArrayProperty) swagger.getDefinitions().get("Employee").getProperties().get("account");
+        assertTrue(account.getItems() instanceof RefProperty);
+        
+    }
+
+    @Test
     public void testIssue697() throws Exception {
         String yaml = "{\n" +
                 "    \"swagger\": \"2.0\",\n" +

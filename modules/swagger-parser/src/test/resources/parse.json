@@ -1,0 +1,220 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Employee Management",
+    "description": "This is sample Swagger UI",
+    "version": "3.0"
+  },
+  "host": "localhost",
+  "basePath": "/empmgmt",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/employee": {
+      "get": {
+        "operationId": "listEmployee",
+        "summary": "",
+        "tags": [
+          "employee"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "required": false,
+            "in": "query",
+            "name": "fields",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/Employee"
+              },
+              "type": "array"
+            }
+          }
+        }
+      }
+    },
+    "/employee/{id}": {
+      "get": {
+        "operationId": "retrieveEmployee",
+        "summary": "Retrieves a 'Employee' by Id",
+        "tags": [
+          "employee"
+        ],
+        "parameters": [
+          {
+            "required": true,
+            "type": "string",
+            "name": "id",
+            "in": "path",
+            "description": "Identifier of the Employee"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/Employee"
+              },
+              "type": "array"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Employee": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": ""
+        },
+        "name": {
+          "type": "string",
+          "description": ""
+        },
+        "status": {
+          "type": "string",
+          "description": ""
+        },
+        "experience": {
+          "$ref": "#/definitions/TimePeriod",
+          "description": ""
+        },
+        "account": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AccountRef"
+          }
+        },
+        "contactMedium": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ContactMedium"
+          }
+        }
+      }
+    },
+    "TimePeriod": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "Time": {
+          "type": "string",
+          "format": "date-time",
+          "description": ""
+        },
+        "Duration": {
+          "type": "integer",
+          "description": ""
+        }
+      }
+    },
+    "AccountRef": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": ""
+        },
+        "href": {
+          "type": "string",
+          "description": ""
+        },
+        "id": {
+          "type": "string",
+          "description": ""
+        },
+        "name": {
+          "type": "string",
+          "description": ""
+        }
+      }
+    },
+    "ContactMedium": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "preferred": {
+          "type": "boolean",
+          "description": ""
+        },
+        "type": {
+          "type": "string",
+          "description": ""
+        },
+        "experience": {
+          "$ref": "#/definitions/TimePeriod",
+          "description": ""
+        },
+        "characteristic": {
+          "$ref": "#/definitions/MediumCharacteristic"
+        }
+      }
+    },
+    "Characteristic": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": ""
+        },
+        "value": {
+          "type": "string",
+          "description": ""
+        }
+      }
+    },
+    "MediumCharacteristic": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "city": {
+          "type": "string",
+          "description": ""
+        },
+        "country": {
+          "type": "string",
+          "description": ""
+        },
+        "emailAddress": {
+          "type": "string",
+          "description": ""
+        },
+        "faxNumber": {
+          "type": "string",
+          "description": ""
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": ""
+        },
+        "postCode": {
+          "type": "string",
+          "description": ""
+        },
+        "stateOrProvince": {
+          "type": "string",
+          "description": ""
+        }
+      }
+    }
+  }
+}
