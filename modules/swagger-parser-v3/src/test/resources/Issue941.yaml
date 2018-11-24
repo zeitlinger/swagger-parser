@@ -1,0 +1,45 @@
+openapi: 3.0.0
+info:
+  title: MyApi
+  version: 1.0.0
+  description: "API élaborée par nos soins"
+paths:
+  /Travaux/TravauxAnalysesDocuments:
+    post:
+      tags:
+      - "Travaux"
+      summary: "Document à analyser des travaux: plâtre, égout"
+      description: ""
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/TravauxAnalysesDocumentsQuery"
+        description: "__PARAMETRES EN ENTREE:__<br/>"
+      responses:
+        Resultat:
+          description: "`RESULTAT RENVOYE: Analyses de documents`"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/TravauxAnalysesDocumentsResponse"
+components:
+  schemas:
+    TravauxAnalysesDocumentsQuery:
+      type: object
+      properties:
+        fichierDocumentBinaire:
+          type: string
+          format: binary
+    TravauxAnalysesDocumentsResponse:
+      type: object
+      properties:
+        typeSupport:
+          type: string
+          description: "Type de support"
+          example: "PLAFOND"

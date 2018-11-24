@@ -57,6 +57,14 @@ public class OpenAPIV3ParserTest {
     protected int serverPort = getDynamicPort();
     protected WireMockServer wireMockServer;
 
+    @Test
+    public void issue941() throws Exception {
+        OpenAPIV3Parser parser = new OpenAPIV3Parser();
+        final OpenAPI result = parser.read("issue941.yaml");
+        Assert.assertNotNull(result);
+        assertEquals("API élaborée par nos soins", result.getInfo().getDescription());
+    }
+
 
     @Test
     public void testIssue913() {
