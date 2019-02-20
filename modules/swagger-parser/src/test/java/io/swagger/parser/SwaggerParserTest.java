@@ -58,6 +58,19 @@ import static org.testng.Assert.fail;
 public class SwaggerParserTest {
 
     @Test
+    public void testIssue1005() {
+        Swagger swagger = new SwaggerParser().read("issue-1005.json");
+        assertNotNull(swagger);
+        Yaml.prettyPrint(swagger);
+        assertTrue(swagger.getDefinitions().get("baseValidationResponse") instanceof ComposedModel);
+        ComposedModel baseValidationResponse = (ComposedModel) swagger.getDefinitions().get("baseValidationResponse");
+        assertNotNull(baseValidationResponse.getAllOf().get(1).getProperties().get("validationErrors").getXml().getWrapped());
+        assertTrue(swagger.getDefinitions().get("priceSheets") instanceof ArrayModel);
+        ArrayModel arrayModel = (ArrayModel) swagger.getDefinitions().get("priceSheets");
+        assertNotNull(arrayModel.getItems().getXml().getName());
+    }
+
+    @Test
     public void testIssueRelativeRefs2(){
         String location = "exampleSpecs/specs/my-domain/test-api/v1/test-api-swagger_v1.json";
         Swagger swagger = new SwaggerParser().read(location, null, true);

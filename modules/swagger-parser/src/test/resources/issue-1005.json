@@ -1,0 +1,748 @@
+{
+  "swagger":"2.0",
+  "info":{
+    "description":"Freight Costing services",
+    "version":"v1",
+    "title":"Freight Costing Services",
+    "contact":{
+      "name":"Earnie Dyke",
+      "url":"http://ferguson.com",
+      "email":"earnest.dyke@ferguson.com"
+    },
+    "license":{
+      "name":"Ferguson Services",
+      "url":"http://ferguson.com/licenses/LICENSE-1.0.html"
+    }
+  },
+  "host":"localhost:8080",
+  "basePath":"/carrier-rate/svc",
+  "tags":[
+    {
+      "name":"Freight Cost Services"
+    }
+  ],
+  "schemes":[
+    "http",
+    "https"
+  ],
+  "paths":{
+    "/v1/rate/address":{
+      "post":{
+        "summary":"Cost Freight between 2 addresses",
+        "description":"Cost Freight between 2 addresses, city, state zip code",
+        "operationId":"carrierRateRequestAddress",
+        "consumes":[
+          "application/json",
+          "application/xml"
+        ],
+        "produces":[
+          "application/json",
+          "application/xml"
+        ],
+        "parameters":[
+          {
+            "in":"body",
+            "name":"body",
+            "required":true,
+            "schema":{
+              "$ref":"#/definitions/freightCostAddressRequest"
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description":"Request succeeded",
+            "schema":{
+              "$ref":"#/definitions/freightCostResponse"
+            }
+          },
+          "400":{
+            "description":"Bad request",
+            "schema":{
+              "$ref":"#/definitions/baseValidationResponse"
+            }
+          },
+          "500":{
+            "description":"Bad request",
+            "schema":{
+              "$ref":"#/definitions/baseResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/rate/warehouse":{
+      "post":{
+        "summary":"Cost Freight from Warehouse to Address",
+        "description":"Cost Freight from a Ferguson Warehouse to an Address, city, state, zip code",
+        "operationId":"carrierRateRequestWarehouse",
+        "produces":[
+          "application/json"
+        ],
+        "parameters":[
+          {
+            "in":"body",
+            "name":"body",
+            "required":true,
+            "schema":{
+              "$ref":"#/definitions/freightCostWarehouseRequest"
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description":"Request succeeded",
+            "schema":{
+              "$ref":"#/definitions/freightCostResponse"
+            }
+          },
+          "400":{
+            "description":"Bad request",
+            "schema":{
+              "$ref":"#/definitions/freightCostResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions":{
+    "freightCostWarehouseRequest":{
+      "type":"object",
+      "title": "Freight Cost Warehouse Request",
+      "description": "Freight Cost Warehouse Request",
+      "properties":{
+        "shipDate":{
+          "$ref":"#/definitions/shipDate"
+        },
+        "deliverDate":{
+          "$ref":"#/definitions/deliverDate"
+        },
+        "preferedCarrier":{
+          "$ref":"#/definitions/preferredCarrier"
+        },
+        "parcelType":{
+          "$ref":"#/definitions/parcelType"
+        },
+        "maxCosts":{
+          "$ref":"#/definitions/maxCosts"
+        },
+        "requestId":{
+          "$ref":"#/definitions/requestId"
+        },
+        "originAddress":{
+          "type":"object",
+          "title":"Origin Address",
+          "required":[
+            "warehouseId"
+          ],
+          "properties":{
+            "warehouseId":{
+              "type":"string",
+              "title":"Warehouse Id",
+              "description":"Id of the warehouse from which order is to be shipped"
+            }
+          }
+        },
+        "destinationAddress":{
+          "$ref":"#/definitions/address"
+        },
+        "products":{
+          "$ref":"#/definitions/products"
+        },
+        "serviceFlags":{
+          "$ref":"#/definitions/serviceFlags"
+        }
+      }
+    },
+    "freightCostAddressRequest":{
+      "type":"object",
+      "title":"Freight Cost Address Request",
+      "description":"Freight Cost by Address Requset definition",
+      "properties":{
+        "shipDate":{
+          "$ref":"#/definitions/shipDate"
+        },
+        "deliverDate":{
+          "$ref":"#/definitions/deliverDate"
+        },
+        "preferedCarrier":{
+          "$ref":"#/definitions/preferredCarrier"
+        },
+        "parcelType":{
+          "$ref":"#/definitions/parcelType"
+        },
+        "maxCosts":{
+          "$ref":"#/definitions/maxCosts"
+        },
+        "requestId":{
+          "$ref":"#/definitions/requestId"
+        },
+        "originAddress":{
+          "$ref":"#/definitions/address"
+        },
+        "destinationAddress":{
+          "$ref":"#/definitions/address"
+        },
+        "products":{
+          "$ref":"#/definitions/products"
+        },
+        "serviceFlags":{
+          "$ref":"#/definitions/serviceFlags"
+        }
+      }
+    },
+    "baseResponse":{
+      "type":"object",
+      "title":"Base Response",
+      "description":"Response returned when an error occurs",
+      "xml":{
+        "name":"freightCostResponse"
+      },
+      "properties":{
+        "respCode":{
+          "type":"string",
+          "title":"Response Code",
+          "description":"Code that indicate the nature of an error. Service consumers should test this to make logic decisions NOT respMsg.",
+          "example":"invalid.warehouse.id"
+        },
+        "respMsg":{
+          "type":"string",
+          "title":"Response Message",
+          "description":"Human readable message related to respCode. This may change over time and should not be used to make logic decisions by the consumer.",
+          "example":"Warehouse with id 498 not found"
+        },
+        "isError":{
+          "type":"boolean",
+          "title":"Error indicator",
+          "default":false,
+          "description":"TRUE is the service was able to complete successfully, FALSE otherwise"
+        },
+        "transId":{
+          "type":"string",
+          "title":"Transaction Id",
+          "description":"Transaction Id, can be provided by the consumer or the service will generate one. Appears on all log entries the serivce produces. If service generated is a UUID."
+        }
+      }
+    },
+    "baseValidationResponse":{
+      "type":"object",
+      "title":"Base Create/Update Response",
+      "description":"Response returned when request validation has occurred",
+      "xml":{
+        "name":"freightCostResponse"
+      },
+      "allOf":[
+        {
+          "$ref":"#/definitions/baseResponse"
+        },
+        {
+          "type":"object",
+          "properties":{
+            "validationErrors":{
+              "type":"array",
+              "xml":{
+                "wrapped":true
+              },
+              "title":"Validation Errors",
+              "description":"Array of 1-N validation errors",
+              "items":{
+                "xml":{
+                  "name":"validationError"
+                },
+                "properties":{
+                  "errorCode":{
+                    "type":"string",
+                    "title":"Error Code",
+                    "description":"Error Code related to field in error",
+                    "example":"invalid.ship.date"
+                  },
+                  "errorMsg":{
+                    "type":"string",
+                    "title":"Error Message",
+                    "description":"Error Message related to Error Code",
+                    "example":"Invalid Ship Date: 2019-01-32"
+                  },
+                  "entity":{
+                    "type":"string",
+                    "title":"Business Entity",
+                    "description":"Business Entity to which the Error Code applies",
+                    "example":"Freight Cost"
+                  },
+                  "field":{
+                    "type":"string",
+                    "title":"Field in Error",
+                    "description":"Field within the Business Entity in Error",
+                    "example":"shipdate"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "freightCostResponse":{
+      "type":"object",
+      "title": "Freight Cost Response",
+      "description": "Freight Cost Response",
+      "allOf":[
+        {
+          "$ref":"#/definitions/baseResponse"
+        },
+        {
+          "type":"object",
+          "properties":{
+            "requestId":{
+              "type":"string",
+              "title":"Request Id",
+              "description":"If the consumer provided a request id it is returned here."
+            },
+            "priceSheets":{
+              "$ref":"#/definitions/priceSheets"
+            }
+          }
+        }
+      ]
+    },
+    "shipDate":{
+      "type":"string",
+      "format":"full-date",
+      "description":"Date order is expected to be shipped",
+      "title":"Ship Date"
+    },
+    "deliverDate":{
+      "type":"string",
+      "format":"full-date",
+      "description":"Date order is expected to be delivered",
+      "title":"Deliver Date"
+    },
+    "preferredCarrier":{
+      "type":"string",
+      "description":"Preferred Carrier code",
+      "title":"Preferred Carrier"
+    },
+    "parcelType":{
+      "type":"string",
+      "description":"Parcel Type",
+      "title":"Parcel Type"
+    },
+    "requestId":{
+      "type":"string",
+      "description":"Request Id used for logging and tracking. If not provided defaults to trans id",
+      "title":"Request Id"
+    },
+    "maxCosts":{
+      "type":"integer",
+      "format":"int32",
+      "title":"Maximum Costs to be returned",
+      "description":"Maximum number of coststo be returned"
+    },
+    "normalizedTotal":{
+      "type":"object",
+      "title":"Normalized Total",
+      "description":"Normalized Total",
+      "properties":{
+        "currencyCode":{
+          "type":"string",
+          "xml":{
+            "attribute":true
+          }
+        },
+        "total":{
+          "type":"string"
+        }
+      }
+    },
+    "address":{
+      "type":"object",
+      "title":"Address",
+      "description":"Address type",
+      "required":[
+        "city",
+        "state",
+        "zipCode"
+      ],
+      "properties":{
+        "city":{
+          "type":"string",
+          "title":"City",
+          "description":"City"
+        },
+        "state":{
+          "type":"string",
+          "maxLength":2,
+          "minLength":2,
+          "title":"US State code",
+          "description":"US State code"
+        },
+        "zipCode":{
+          "type":"string",
+          "pattern":"^\\d{5}$|^\\d{5}\\-\\d{4}$",
+          "title":"US Zip Code",
+          "description":"US Zip Code",
+          "example":"23602-1234"
+        },
+        "countryCode":{
+          "type":"string",
+          "minLength":2,
+          "maxLength":2,
+          "title":"Country Code",
+          "description":"Country Code",
+          "default":"US"
+        }
+      }
+    },
+    "serviceFlags":{
+      "type":"array",
+      "title":"Service Flags array",
+      "description":"Array of 0 or more Service Flags",
+      "xml":{
+        "wrapped":true
+      },
+      "items":{
+        "type":"string",
+        "title":"Service Flag",
+        "description":"Service Flag",
+        "xml":{
+          "name":"serviceFlag"
+        }
+      }
+    },
+    "products":{
+      "type":"array",
+      "title":"List of Prodcuts",
+      "description":"List of Products",
+      "xml":{
+        "wrapped":true
+      },
+      "items":{
+        "type":"object",
+        "title":"Product",
+        "description":"Product",
+        "xml":{
+          "name":"product",
+          "wrapped":true
+        },
+        "required":[
+          "id",
+          "qty"
+        ],
+        "properties":{
+          "id":{
+            "type":"string",
+            "title":"Product Id",
+            "description":"Master Product Id"
+          },
+          "qty":{
+            "type":"number",
+            "format":"float",
+            "title":"Quantity",
+            "description":"Number of this product being shipped at this line",
+            "minimum":0.1
+          },
+          "freightClass":{
+            "type":"string",
+            "title":"Freight Class",
+            "description":"Freight Class"
+          },
+          "weight":{
+            "type":"number",
+            "format":"float",
+            "title":"Weight",
+            "description":"Weight of single unit of measure of product"
+          },
+          "weightUnit":{
+            "type":"string",
+            "title":"Weight Unit",
+            "description":"Weight Unit"
+          },
+          "dimLength":{
+            "type":"number",
+            "format":"float",
+            "title":"Dimension, Length",
+            "description":"Length of the product to be shipped"
+          },
+          "dimHeight":{
+            "type":"number",
+            "format":"float",
+            "title":"Dimension, Height",
+            "description":"Height of the product to be shipped"
+          },
+          "dimWidth":{
+            "type":"number",
+            "format":"float",
+            "title":"Dimension, Width",
+            "description":"Width of the product to be shipped"
+          },
+          "dimUnits":{
+            "type":"string",
+            "title":"Dimension, unit of measure",
+            "description":"Unit of measure of dimensions"
+          }
+        }
+      }
+    },
+    "priceSheets":{
+      "type":"array",
+      "title":"Price Sheets",
+      "description":"Array of 0 to maxCosts Price Sheets from call to Mercury Gate",
+      "xml":{
+        "wrapped":true
+      },
+      "items":{
+        "type":"object",
+        "title":"Price Sheet",
+        "description":"Price Sheet",
+        "xml":{
+          "name":"priceSheet"
+        },
+        "properties":{
+          "accessorialTotal":{
+            "type":"string"
+          },
+          "subTotal":{
+            "type":"string"
+          },
+          "total":{
+            "type":"string"
+          },
+          "normalizedTotal":{
+            "$ref":"#/definitions/normalizedTotal"
+          },
+          "contractId":{
+            "type":"string"
+          },
+          "contractName":{
+            "type":"string"
+          },
+          "carrierId":{
+            "type":"string"
+          },
+          "carrierName":{
+            "type":"string"
+          },
+          "scac":{
+            "type":"string"
+          },
+          "mode":{
+            "type":"string"
+          },
+          "service":{
+            "type":"string"
+          },
+          "serviceDays":{
+            "type":"string"
+          },
+          "distance":{
+            "type":"string"
+          },
+          "id":{
+            "type":"string"
+          },
+          "insuranceTypes":{
+            "type":"array",
+            "xml":{
+              "wrapped":true
+            },
+            "items":{
+              "type":"object",
+              "xml":{
+                "name":"insuranceType"
+              },
+              "properties":{
+                "type":{
+                  "type":"string"
+                },
+                "contactPhone":{
+                  "type":"string"
+                },
+                "contactName":{
+                  "type":"string"
+                },
+                "expirationDate":{
+                  "type":"string"
+                },
+                "company":{
+                  "type":"string"
+                },
+                "amount":{
+                  "type":"string"
+                }
+              }
+            }
+          },
+          "expectedDeliveryDate":{
+            "type":"string"
+          },
+          "reasonCode":{
+            "type":"string"
+          },
+          "status":{
+            "type":"string"
+          },
+          "laneId":{
+            "type":"string"
+          },
+          "zone":{
+            "type":"string"
+          },
+          "routeGuidePriority":{
+            "type":"string"
+          },
+          "carrierLocationOid":{
+            "type":"string"
+          },
+          "originService":{
+            "type":"string"
+          },
+          "destinationService":{
+            "type":"string"
+          },
+          "charges":{
+            "type":"array",
+            "xml":{
+              "wrapped":true
+            },
+            "items":{
+              "type":"object",
+              "xml":{
+                "wrapped":true,
+                "name":"charge"
+              },
+              "properties":{
+                "description":{
+                  "type":"string"
+                },
+                "ediCode":{
+                  "type":"string"
+                },
+                "amount":{
+                  "type":"string"
+                },
+                "rate":{
+                  "type":"string"
+                },
+                "rateQualifier":{
+                  "type":"string"
+                },
+                "quantity":{
+                  "type":"string"
+                },
+                "weight":{
+                  "type":"string"
+                },
+                "dimWeight":{
+                  "type":"string"
+                },
+                "freightClass":{
+                  "type":"string"
+                },
+                "fakFreightClass":{
+                  "type":"string"
+                },
+                "isMin":{
+                  "type":"string"
+                },
+                "isMax":{
+                  "type":"string"
+                },
+                "isNontaxable":{
+                  "type":"string"
+                },
+                "sequenceNum":{
+                  "type":"string",
+                  "xml":{
+                    "attribute":true
+                  }
+                },
+                "type":{
+                  "type":"string",
+                  "xml":{
+                    "attribute":true
+                  }
+                },
+                "itemGroupId":{
+                  "type":"string",
+                  "xml":{
+                    "attribute":true
+                  }
+                }
+              }
+            }
+          },
+          "comments":{
+            "type":"array",
+            "items":{
+              "properties":{
+                "value:":{
+                  "type":"string"
+                },
+                "type":{
+                  "type":"string",
+                  "xml":{
+                    "attribute":true
+                  }
+                },
+                "dateTime":{
+                  "type":"string",
+                  "xml":{
+                    "attribute":true
+                  }
+                },
+                "user":{
+                  "type":"string",
+                  "xml":{
+                    "attribute":true
+                  }
+                }
+              }
+            }
+          },
+          "type":{
+            "type":"string",
+            "xml":{
+              "attribute":true
+            }
+          },
+          "createDate":{
+            "type":"string",
+            "xml":{
+              "attribute":true
+            }
+          },
+          "currencyCode":{
+            "type":"string",
+            "xml":{
+              "attribute":true
+            }
+          },
+          "isAllocated":{
+            "type":"string",
+            "xml":{
+              "attribute":true
+            }
+          },
+          "isSelected":{
+            "type":"string",
+            "xml":{
+              "attribute":true
+            }
+          },
+          "chargeModel":{
+            "type":"string",
+            "xml":{
+              "attribute":true
+            }
+          },
+          "internalId":{
+            "type":"string",
+            "xml":{
+              "attribute":true
+            }
+          }
+        }
+      }
+    }
+  }
+}
