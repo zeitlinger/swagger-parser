@@ -1,0 +1,13 @@
+get:
+  summary: Info for a specific pet
+  operationId: getById
+  parameters:
+    - name: petId
+      in: path
+      required: true
+      description: The id of the pet to retrieve
+      schema:
+        type: integer
+  responses:
+    200:
+      description: Expected response to a valid request

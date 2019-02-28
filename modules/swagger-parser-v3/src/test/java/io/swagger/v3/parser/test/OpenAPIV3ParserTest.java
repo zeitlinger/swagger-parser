@@ -61,6 +61,25 @@ public class OpenAPIV3ParserTest {
     protected WireMockServer wireMockServer;
 
     @Test
+    public void testIssue1014() {
+
+        ParseOptions options = new ParseOptions();
+        options.setResolve(true);
+        options.setResolveCombinators(true);
+        SwaggerParseResult parseResult = new OpenAPIV3Parser().readLocation("issue-1014/issue-1014.yaml", null, options);
+        OpenAPI apispec = parseResult.getOpenAPI();
+        assertNotNull(apispec);
+        //local parameter
+        assertTrue(apispec.getPaths().get("/api/pet/").getGet().getParameters().get(0).getStyle() != null);
+        assertTrue(apispec.getPaths().get("/api/pet/").getGet().getParameters().get(0).getExplode() != null);
+        //remote parameter
+        assertTrue(apispec.getPaths().get("/api/pet/{petId}").getGet().getParameters().get(0).getStyle() != null);
+        assertTrue(apispec.getPaths().get("/api/pet/{petId}").getGet().getParameters().get(0).getExplode() != null);
+
+    }
+
+
+    @Test
     public void testIssue1015() {
 
         ParseOptions options = new ParseOptions();

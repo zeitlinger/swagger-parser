@@ -1,0 +1,25 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Swagger Test
+  license:
+    name: MIT
+servers:
+  - url: /
+paths:
+  /api/pet/{petId}:
+    $ref: "file.yaml"
+  /api/pet/:
+    get:
+      summary: Info for a specific pet
+      operationId: getById
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          description: The id of the pet to retrieve
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Expected response to a valid request
